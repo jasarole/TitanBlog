@@ -13,7 +13,7 @@ namespace TitanBlog.Data
             : base(options)
         {
         }
-        public DbSet<TitanBlog.Models.Blog> Blog { get; set; }
-        public DbSet<TitanBlog.Models.Post> Post { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Post> Posts { get; set; }
     }
 }
