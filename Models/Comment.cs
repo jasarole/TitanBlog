@@ -10,6 +10,8 @@ namespace TitanBlog.Models
         [Display(Name="Post Name")]
         public int PostId { get; set; }
 
+        public string AuthorId { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime Created { get; set; }
 
@@ -23,5 +25,6 @@ namespace TitanBlog.Models
 
         //Navigation Properties
         public virtual Post Post { get; set; }
+        public virtual BlogUser Author { get; set; }
     }
 }

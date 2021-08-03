@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,6 +35,7 @@ namespace TitanBlog.Models
         public byte[] ImageData { get; set; }
 
         [Display(Name="Select Image")]
+        [NotMapped]
         public IFormFile Image { get; set; }
 
         //Navigational Properties - These properties allow us to move from one object to another related object

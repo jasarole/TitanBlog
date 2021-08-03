@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,6 +42,7 @@ namespace TitanBlog.Models
         public byte[] ImageData { get; set; }
 
         [Display(Name = "Select Image")]
+        [NotMapped]
         public IFormFile Image { get; set; }
 
         //Navigation Properties
