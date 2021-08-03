@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -33,10 +34,19 @@ namespace TitanBlog.Models
         [Display(Name = "Updated Date")]
         public DateTime? Updated { get; set; }
 
-        //This will be a standardized verson of the Title
-        //Title = "I am a Post"
-        //Slug = i-am-a-post
         public string Slug { get; set; }
+
+        //Adding the properties for describing any images being used
+        public string ImageType { get; set; }
+        public byte[] ImageData { get; set; }
+
+        [Display(Name = "Select Image")]
+        public IFormFile Image { get; set; }
+
+        //Navigation Properties
+        public virtual Blog Blog { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
+        public virtual ICollection<Tag> Tagss { get; set; } = new HashSet<Tag>();
 
     }
 }
