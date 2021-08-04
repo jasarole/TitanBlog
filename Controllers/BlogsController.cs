@@ -22,6 +22,7 @@ namespace TitanBlog.Controllers
         // GET: Blogs
         public async Task<IActionResult> Index()
         {
+            
             return View(await _context.Blog.ToListAsync());
         }
 

@@ -25,15 +25,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="Abstract" class="control-label"></label>
-                <input asp-for="Abstract" class="form-control" />
+                <textarea rows="5" asp-for="Abstract" class="form-control"></textarea>
                 <span asp-validation-for="Abstract" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
+                <textarea asp-for="Content" class="form-control"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="Created" class="control-label"></label>
                 <input asp-for="Created" class="form-control" />
                 <span asp-validation-for="Created" class="text-danger"></span>
@@ -48,16 +48,16 @@
                 <input asp-for="Slug" class="form-control" />
                 <span asp-validation-for="Slug" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                <label asp-for="ImageType" class="control-label"></label>
-                <input asp-for="ImageType" class="form-control" />
-                <span asp-validation-for="ImageType" class="text-danger"></span>
-            </div>
             <div class="form-group">
-                <label asp-for="ImageData" class="control-label"></label>
-                <input asp-for="ImageData" class="form-control" />
-                <span asp-validation-for="ImageData" class="text-danger"></span>
-            </div>*@
+                    <label asp-for="ImageType" class="control-label"></label>
+                    <input asp-for="ImageType" class="form-control" />
+                    <span asp-validation-for="ImageType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImageData" class="control-label"></label>
+                    <input asp-for="ImageData" class="form-control" />
+                    <span asp-validation-for="ImageData" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -71,4 +71,13 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/js/summernote-bs4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#Content').summernote({
+                height: 200
+            });
+        });
+    </script>
 }
