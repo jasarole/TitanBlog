@@ -24,12 +24,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Updated)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.ImageType)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ImageData)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>
@@ -48,12 +48,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Updated)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.ImageType)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ImageData)
-            </td>
+            </td>*@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

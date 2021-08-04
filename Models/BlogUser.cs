@@ -13,6 +13,7 @@ namespace TitanBlog.Models
         public string LastName { get; set; }
         public string DisplayName { get; set; }
 
+        //Properties for image
         public string ImageType { get; set; }
         public byte[] ImageData { get; set; }
 

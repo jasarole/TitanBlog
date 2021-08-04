@@ -14,7 +14,7 @@ namespace TitanBlog.Models
         public int Id { get; set; }
 
         [Required]
-        [Display(Name="Name (Must be at least 2 characters, 100 max)")]
+        [Display(Name="The Blog Name... (Must be at least 2 characters, 100 max)")]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters long.", MinimumLength = 2)]
         public string Name { get; set; }
 
