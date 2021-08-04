@@ -27,10 +27,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.Updated)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Slug)
             </th>
-            @*<th>
+            <th>
                 @Html.DisplayNameFor(model => model.ImageType)
             </th>
             <th>
@@ -61,17 +61,17 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Updated)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.Slug)
             </td>
-            @*<td>
+            <td>
                 @Html.DisplayFor(modelItem => item.ImageType)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ImageData)
             </td>*@
             <td>
-                @Html.DisplayFor(modelItem => item.Blog.Description)
+                @Html.DisplayFor(modelItem => item.Blog.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

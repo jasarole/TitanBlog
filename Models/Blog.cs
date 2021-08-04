@@ -14,7 +14,7 @@ namespace TitanBlog.Models
         public int Id { get; set; }
 
         [Required]
-        [Display(Name="The Blog Name... (Must be at least 2 characters, 100 max)")]
+        [Display(Name="Blog Name (Must be at least 2 characters, 100 max)")]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters long.", MinimumLength = 2)]
         public string Name { get; set; }
 
@@ -24,10 +24,11 @@ namespace TitanBlog.Models
         public string Description { get; set; }
         
         [DataType(DataType.Date)]
-        [Display(Name="Created Date")]
+        [Display(Name="Date Created")]
         public DateTime Created { get; set; }
 
         [DataType(DataType.Date)]
+        [Display(Name="Date Updated")]
         public DateTime? Updated { get; set; }
 
         //Adding the properties for describing any images being used

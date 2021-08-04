@@ -28,11 +28,11 @@ namespace TitanBlog.Models
         public string Content { get; set; }
 
         [DataType(DataType.Date)]
-        [Display(Name = "Created Date")]
+        [Display(Name = "Date Created")]
         public DateTime Created { get; set; }
 
         [DataType(DataType.Date)]
-        [Display(Name = "Updated Date")]
+        [Display(Name = "Date Updated")]
         public DateTime? Updated { get; set; }
 
         public string Slug { get; set; }
