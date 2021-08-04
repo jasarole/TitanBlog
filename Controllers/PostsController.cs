@@ -61,6 +61,8 @@ namespace TitanBlog.Controllers
         {
             if (ModelState.IsValid)
             {
+                post.Created = DateTime.Now;
+
                 _context.Add(post);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -102,6 +104,8 @@ namespace TitanBlog.Controllers
             {
                 try
                 {
+                    post.Updated = DateTime.Now;
+
                     _context.Update(post);
                     await _context.SaveChangesAsync();
                 }

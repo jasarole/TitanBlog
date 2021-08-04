@@ -63,6 +63,8 @@ namespace TitanBlog.Controllers
         {
             if (ModelState.IsValid)
             {
+                comment.Created = DateTime.Now;
+
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -106,6 +108,8 @@ namespace TitanBlog.Controllers
             {
                 try
                 {
+                    comment.Updated = DateTime.Now;
+
                     _context.Update(comment);
                     await _context.SaveChangesAsync();
                 }

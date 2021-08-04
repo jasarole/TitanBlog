@@ -59,6 +59,10 @@ namespace TitanBlog.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Programmatically add information necessary for the Model
+                //but not supplied by the user
+                blog.Created = DateTime.Now;
+                
                 _context.Add(blog);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -98,6 +102,8 @@ namespace TitanBlog.Controllers
             {
                 try
                 {
+                    blog.Updated = DateTime.Now;
+
                     _context.Update(blog);
                     await _context.SaveChangesAsync();
                 }
