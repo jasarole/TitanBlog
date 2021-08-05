@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1 class="text-center">Published Posts</h1>
+<h1 class="text-center">Unpublished (WIP) Posts</h1>
 
 <p>
     <a class="btn btn-outline-primary" asp-action="Create">Create New Post</a>
@@ -34,14 +34,14 @@
                     @Html.DisplayNameFor(model => model.Updated)
                 </th>
                 @*<th>
-                    @Html.DisplayNameFor(model => model.Slug)
-                </th>
-                <th>
-                        @Html.DisplayNameFor(model => model.ImageType)
+                        @Html.DisplayNameFor(model => model.Slug)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.ImageData)
-                    </th>*@
+                            @Html.DisplayNameFor(model => model.ImageType)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ImageData)
+                        </th>*@
 
                 <th></th>
             </tr>
@@ -51,7 +51,7 @@
             {
 
                 //check to see if the post is ready to publish
-                //@if (item.Publish == true)
+                //@if (item.Publish == false)
                 //{
                     <tr>
                         <td>
@@ -73,14 +73,14 @@
                             @Html.DisplayFor(modelItem => item.Updated)
                         </td>
                         @*<td>
-                            @Html.DisplayFor(modelItem => item.Slug)
-                        </td>
-                        <td>
-                                @Html.DisplayFor(modelItem => item.ImageType)
+                                @Html.DisplayFor(modelItem => item.Slug)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ImageData)
-                            </td>*@
+                                    @Html.DisplayFor(modelItem => item.ImageType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ImageData)
+                                </td>*@
 
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

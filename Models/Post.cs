@@ -36,6 +36,10 @@ namespace TitanBlog.Models
         [Display(Name = "Date Updated")]
         public DateTime? Updated { get; set; }
 
+        //Is the Post ready to be published to the Blog?
+        [Display(Name ="Ready to publish?")]
+        public bool Publish { get; set; }
+
         public string Slug { get; set; }
 
         //Adding the properties for describing any images being used

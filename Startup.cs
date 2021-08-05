@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TitanBlog.Data;
 using TitanBlog.Models;
+using TitanBlog.Services;
 
 namespace TitanBlog
 {
@@ -36,10 +37,15 @@ namespace TitanBlog
 
             services.AddIdentity<BlogUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddDefaultUI()
+                .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //Reguister the BasicSlugService class as a service
+            services.AddScoped<BasicSlugService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

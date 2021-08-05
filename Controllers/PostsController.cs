@@ -11,19 +11,28 @@ using TitanBlog.Services;
 
 namespace TitanBlog.Controllers
 {
-    public class PostsController : Controller
+    public class PostsController : Controller 
     {
         private readonly ApplicationDbContext _context;
+        private readonly BasicSlugService _slugService;
 
-        public PostsController(ApplicationDbContext context)
+        public PostsController(ApplicationDbContext context, BasicSlugService slugService)
         {
             _context = context;
+            _slugService = slugService;
         }
 
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Post.Include(p => p.Blog);
+            //var applicationDbContext = _context.Post.Include(p => p.Blog);
+            var applicationDbContext = _context.Post.Where(p => p.Publish).Include(p => p.Blog);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> Unpublished()
+        {
+            var applicationDbContext = _context.Post.Where(p => !p.Publish).Include(p => p.Blog);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -49,7 +58,7 @@ namespace TitanBlog.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Description");
+            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name");
             return View();
         }
 
@@ -58,14 +67,13 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BlogId,Title,Abstract,Content")] Post post)
+        public async Task<IActionResult> Create([Bind("BlogId,Title,Abstract,Content,Publish")] Post post)
         {
             if (ModelState.IsValid)
             {
-                var slugMaker = new BasicSlugService(_context);
-                var slug = slugMaker.UrlFriendly(post.Title);
+                var slug = _slugService.UrlFriendly(post.Title);
 
-                if(slugMaker.IsUnique(slug))
+                if(_slugService.IsUnique(slug))
                 {
                     post.Slug = slug;
                 }
@@ -73,7 +81,7 @@ namespace TitanBlog.Controllers
                 {
                     //I have determinded that the title is a duplicate slug...
                     ModelState.AddModelError("Title", "The Title you entered cannot be used, please try again...");
-                    ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Description", post.BlogId);
+                    ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name", post.BlogId);
                     return View(post);
                 }
 
@@ -83,7 +91,7 @@ namespace TitanBlog.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Description", post.BlogId);
+            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name", post.BlogId);
             return View(post);
         }
 
@@ -109,7 +117,7 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Created,Slug")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Created,Slug,Publish")] Post post)
         {
             if (id != post.Id)
             {
@@ -120,19 +128,18 @@ namespace TitanBlog.Controllers
             {
                 try
                 {
-                    var slugMaker = new BasicSlugService(_context);
-                    var newSlug = slugMaker.UrlFriendly(post.Title);
+                    var newSlug = _slugService.UrlFriendly(post.Title);
 
                     if (newSlug != post.Slug)
                     {
-                        if (slugMaker.IsUnique(newSlug))
+                        if (_slugService.IsUnique(newSlug))
                         {
                             post.Slug = newSlug;
                         }
                         else
                         {
                             ModelState.AddModelError("Title", "The Title you entered cannot be used, please try again...");
-                            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Description", post.BlogId);
+                            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name", post.BlogId);
                             return View(post);
                         }
                     }
@@ -155,7 +162,7 @@ namespace TitanBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Description", post.BlogId);
+            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name", post.BlogId);
             return View(post);
         }
 
