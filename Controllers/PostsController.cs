@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TitanBlog.Data;
 using TitanBlog.Models;
+using TitanBlog.Services;
 
 namespace TitanBlog.Controllers
 {
@@ -57,10 +58,25 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BlogId,Title,Abstract,Content,Created,Updated,Slug,ImageType,ImageData")] Post post)
+        public async Task<IActionResult> Create([Bind("BlogId,Title,Abstract,Content")] Post post)
         {
             if (ModelState.IsValid)
             {
+                var slugMaker = new BasicSlugService(_context);
+                var slug = slugMaker.UrlFriendly(post.Title);
+
+                if(slugMaker.IsUnique(slug))
+                {
+                    post.Slug = slug;
+                }
+                else
+                {
+                    //I have determinded that the title is a duplicate slug...
+                    ModelState.AddModelError("Title", "The Title you entered cannot be used, please try again...");
+                    ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Description", post.BlogId);
+                    return View(post);
+                }
+
                 post.Created = DateTime.Now;
 
                 _context.Add(post);
@@ -84,7 +100,7 @@ namespace TitanBlog.Controllers
             {
                 return NotFound();
             }
-            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Description", post.BlogId);
+            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name", post.BlogId);
             return View(post);
         }
 
@@ -93,7 +109,7 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Created,Updated,Slug,ImageType,ImageData")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Created,Slug")] Post post)
         {
             if (id != post.Id)
             {
@@ -104,6 +120,23 @@ namespace TitanBlog.Controllers
             {
                 try
                 {
+                    var slugMaker = new BasicSlugService(_context);
+                    var newSlug = slugMaker.UrlFriendly(post.Title);
+
+                    if (newSlug != post.Slug)
+                    {
+                        if (slugMaker.IsUnique(newSlug))
+                        {
+                            post.Slug = newSlug;
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Title", "The Title you entered cannot be used, please try again...");
+                            ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Description", post.BlogId);
+                            return View(post);
+                        }
+                    }
+
                     post.Updated = DateTime.Now;
 
                     _context.Update(post);
