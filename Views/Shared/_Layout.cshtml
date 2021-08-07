@@ -19,23 +19,33 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         @*<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>*@
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>*@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Blogs" asp-action="Index">Blogs</a>
                         </li>
                         <li class="nav-item">
                             <a class="bg-success nav-link text-dark " asp-area="" asp-controller="Posts" asp-action="Index">Published Posts</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="bg-warning nav-link text-dark " asp-area="" asp-controller="Posts" asp-action="Unpublished">Unpublished Posts</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Comments" asp-action="Index">Comments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
-                        </li>
+
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="bg-warning nav-link text-dark " asp-area="" asp-controller="Posts" asp-action="Unpublished">Unpublished Posts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Blogs" asp-action="Create">Create Blog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Posts" asp-action="Create">Create Post</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Comments" asp-action="Index">Comments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

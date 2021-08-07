@@ -2,21 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TitanBlog.Data;
 using TitanBlog.Models;
+using TitanBlog.Services.Interfaces;
 
 namespace TitanBlog.Controllers
 {
     public class BlogsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
 
-        public BlogsController(ApplicationDbContext context)
+        public BlogsController(ApplicationDbContext context, IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         // GET: Blogs
@@ -45,6 +49,7 @@ namespace TitanBlog.Controllers
         }
 
         // GET: Blogs/Create
+        [Authorize(Roles="Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -55,10 +60,12 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Created,Updated,ImageType,ImageData")] Blog blog)
+        public async Task<IActionResult> Create([Bind("Name,Description,Image")] Blog blog)
         {
             if (ModelState.IsValid)
             {
+                blog.ImageType = _imageService.ContentType(blog.Image);
+                blog.ImageData = await _imageService.EncodeImageAsync(blog.Image);
                 //Programmatically add information necessary for the Model
                 //but not supplied by the user
                 blog.Created = DateTime.Now;
@@ -71,6 +78,7 @@ namespace TitanBlog.Controllers
         }
 
         // GET: Blogs/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -142,6 +150,7 @@ namespace TitanBlog.Controllers
         }
 
         // POST: Blogs/Delete/5
+        [Authorize(Roles = "Administrator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -30,12 +31,6 @@ namespace TitanBlog.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        public async Task<IActionResult> Unpublished()
-        {
-            var applicationDbContext = _context.Post.Where(p => !p.Publish).Include(p => p.Blog);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -56,6 +51,7 @@ namespace TitanBlog.Controllers
         }
 
         // GET: Posts/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name");
@@ -96,6 +92,7 @@ namespace TitanBlog.Controllers
         }
 
         // GET: Posts/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -167,6 +164,7 @@ namespace TitanBlog.Controllers
         }
 
         // GET: Posts/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -199,6 +197,12 @@ namespace TitanBlog.Controllers
         private bool PostExists(int id)
         {
             return _context.Post.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> Unpublished()
+        {
+            var applicationDbContext = _context.Post.Where(p => !p.Publish).Include(p => p.Blog);
+            return View(await applicationDbContext.ToListAsync());
         }
     }
 }

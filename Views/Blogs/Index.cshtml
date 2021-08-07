@@ -1,4 +1,8 @@
-﻿@model IEnumerable<TitanBlog.Models.Blog>
+﻿@using TitanBlog.Models
+@using TitanBlog.Services.Interfaces
+
+@model IEnumerable<Blog>
+@inject IImageService imageService
 
 @{
     ViewData["Title"] = "Index";
@@ -7,11 +11,12 @@
 <h1 class="text-center">Index - Blogs</h1>
 
 <p>
-    <a class="btn btn-outline-primary"asp-action="Create">Create New Blog</a>
+    <a class="btn btn-outline-primary" asp-action="Create">Create New Blog</a>
 </p>
 <table class="table">
     <thead>
         <tr>
+            <th>Image</th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -24,42 +29,35 @@
             <th>
                 @Html.DisplayNameFor(model => model.Updated)
             </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.ImageType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageData)
-            </th>*@
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Updated)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.ImageType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageData)
-            </td>*@
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@imageService.DecodeImage(item.ImageData, item.ImageType)" class="img-fluid" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Updated)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

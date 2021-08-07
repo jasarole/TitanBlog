@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using TitanBlog.Data;
 using TitanBlog.Models;
 using TitanBlog.Services;
+using TitanBlog.Services.Interfaces;
 
 namespace TitanBlog
 {
@@ -46,6 +47,9 @@ namespace TitanBlog
             //Reguister the BasicSlugService class as a service
             services.AddScoped<BasicSlugService>();
 
+            services.AddTransient<BasicSeedService>();
+
+            services.AddTransient<IImageService, BasicImageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
