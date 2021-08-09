@@ -7,6 +7,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -14,35 +15,42 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using TitanBlog.Models;
+using TitanBlog.Services.Interfaces;
 
 namespace TitanBlog.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
+        #region Class Members
         private readonly SignInManager<BlogUser> _signInManager;
         private readonly UserManager<BlogUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IImageService _imageService;
 
         public RegisterModel(
             UserManager<BlogUser> userManager,
             SignInManager<BlogUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, IImageService imageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _imageService = imageService;
         }
+        #endregion
 
+        #region Properties
         [BindProperty]
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        #endregion
 
         public class InputModel
         {
@@ -75,7 +83,11 @@ namespace TitanBlog.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Display(Name = "Select a custom Image")]
+            public IFormFile Image { get; set; }
         }
+
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -89,7 +101,22 @@ namespace TitanBlog.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new BlogUser { FirstName = Input.FirstName, LastName = Input.LastName, DisplayName = Input.DisplayName, UserName = Input.Email, Email = Input.Email };
+                var user = new BlogUser
+                    { 
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName,
+                        DisplayName = Input.DisplayName,
+                        UserName = Input.Email,
+                        Email = Input.Email,
+                        ImageData = await _imageService.EncodeImageAsync("defaultUser.jpg"),
+                        ImageType = "jpg"
+                    };
+
+                if(Input.Image != null)
+                {
+                    user.ImageData = await _imageService.EncodeImageAsync(Input.Image);
+                    user.ImageType = _imageService.ContentType(Input.Image);
+                }
                 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
