@@ -34,6 +34,9 @@ namespace TitanBlog.Areas.Identity.Pages.Account.Manage
         [TempData]
         public string StatusMessage { get; set; }
 
+        [TempData]
+        public string ErrorMessage { get; set; }
+
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -103,9 +106,18 @@ namespace TitanBlog.Areas.Identity.Pages.Account.Manage
 
             if (Input.Image != null)
             {
-                user.ImageData = await _imageService.EncodeImageAsync(Input.Image);
-                user.ImageType = _imageService.ContentType(Input.Image);
-                await _userManager.UpdateAsync(user);
+                if (_imageService.IsValidType(Input.Image))
+                {
+                    user.ImageData = await _imageService.EncodeImageAsync(Input.Image);
+                    user.ImageType = Input.Image.ContentType;
+                    await _userManager.UpdateAsync(user);
+                }
+                else
+                {
+                    await LoadAsync(user);
+                    ModelState.AddModelError("Input.Image", "Please choose an actual image type...");
+                    return Page();
+                }
             }
 
             await _signInManager.RefreshSignInAsync(user);
