@@ -31,17 +31,16 @@ namespace TitanBlog.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Posts/Details/5
-        public async Task<IActionResult> Details(int? id)
+
+        public async Task<IActionResult> Details(string slug)
         {
-            if (id == null)
+            //Check for null or empty string
+            if (string.IsNullOrEmpty(slug))
             {
                 return NotFound();
             }
 
-            var post = await _context.Post
-                .Include(p => p.Blog)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var post = await _context.Post.Include(p => p.Blog).FirstOrDefaultAsync(p => p.Slug == slug);
             if (post == null)
             {
                 return NotFound();
@@ -49,6 +48,24 @@ namespace TitanBlog.Controllers
 
             return View(post);
         }
+        //// GET: Posts/Details/5
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var post = await _context.Post
+        //        .Include(p => p.Blog)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (post == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(post);
+        //}
 
         // GET: Posts/Create
         [Authorize(Roles = "Administrator")]
