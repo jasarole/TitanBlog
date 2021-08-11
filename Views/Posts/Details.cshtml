@@ -1,72 +1,197 @@
-﻿@model TitanBlog.Models.Post
+﻿@using TitanBlog.Services.Interfaces
+
+@model TitanBlog.Models.Post
+@inject IImageService _imageService
+
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="container">
+    <div class="row">
+        <!-- Latest Posts -->
+        <main class="post blog-post col-lg-8">
+            <div class="container">
+                <div class="post-single">
+                    <div class="post-thumbnail"><img src="@_imageService.DecodeImage(Model.ImageData, Model.ImageType)" alt="..." class="img-fluid"></div>
+                    <div class="post-details">
 
-<div>
-    <h4>Post</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Abstract)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Abstract)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.Raw(Model.Content)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Slug)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Slug)
-        </dd>
-        @*<dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageData)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageData)
-        </dd>*@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Blog)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Blog.Description)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+                        <h1>@Model.Title<a href="#"><i class="fa fa-bookmark-o"></i></a></h1>
+
+                        <div class="post-footer d-flex align-items-center flex-column flex-sm-row">
+                            <a href="#" class="author d-flex align-items-center flex-wrap">
+                                <div class="avatar"><img src="~/images/profile-img.png" alt="..." class="img-fluid"></div>
+                                <div class="title"><span>Jason Lynn</span></div>
+                            </a>
+                            <div class="d-flex align-items-center flex-wrap">
+                                <div class="date"><i class="icon-clock"></i>@Model.Created.ToString("MMM dd, yyyy")</div>
+                                <div class="comments meta-last">
+                                    <i class="icon-comment"></i>
+                                    @Model.Comments.Count
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-body">
+                            @Html.Raw(Model.Content)
+                        </div>
+
+                        <div class="post-tags">
+                            <a href="#" class="tag">#Business</a>
+                            <a href="#" class="tag">#Tricks</a>
+                            <a href="#" class="tag">#Financial</a>
+                            <a href="#" class="tag">#Economy</a>
+                        </div>
+
+                        @*<div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row">
+                                <a href="#" class="prev-post text-left d-flex align-items-center">
+                                    <div class="icon prev"><i class="fa fa-angle-left"></i></div>
+                                    <div class="text">
+                                        <strong class="text-primary">Previous Post </strong>
+                                        <h6>I Bought a Wedding Dress.</h6>
+                                    </div>
+                                </a><a href="#" class="next-post text-right d-flex align-items-center justify-content-end">
+                                    <div class="text">
+                                        <strong class="text-primary">Next Post </strong>
+                                        <h6>I Bought a Wedding Dress.</h6>
+                                    </div>
+                                    <div class="icon next"><i class="fa fa-angle-right">   </i></div>
+                                </a>
+                            </div>*@
+
+                        <div class="post-comments">
+                            <header>
+                                <h3 class="h6" id="postComments">Post Comments<span class="no-of-comments">(@Model.Comments.Count)</span></h3>
+                            </header>
+                            @foreach (var comment in Model.Comments.OrderByDescending(c => c.Created))
+                            {
+                                <div class="comment">
+                                    <div class="comment-header d-flex justify-content-between">
+                                        <div class="user d-flex align-items-center">
+                                            <div class="image"><img src="@_imageService.DecodeImage(comment.Author.ImageData, comment.Author.ImageType)" alt="..." class="img-fluid rounded-circle"></div>
+                                            <div class="title"><strong>@comment.Author.FullName</strong><span class="date">@comment.Created.ToString("MMM dd, yyyy")</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="comment-body">
+                                        <p>@comment.Body</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="add-comment">
+                                <header>
+                                    <h3 class="h6" id="newComment">Leave a comment</h3>
+                                </header>
+                                <form asp-controller="Comments" asp-action="Create" method="post" class="commenting-form">
+                                    <input type="hidden" value="@Model.Id" name="PostId" id="PostId" />
+                                    <input type="hidden" value="@Model.Slug" name="Slug" id="Slug" />
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <textarea name="body" id="body" placeholder="Type your comment" class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <button type="submit" class="btn btn-dark">Submit Comment</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <header>
+                                <h3 class="h6">
+                                    <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Details", "Posts", new { slug = Model.Slug })" asp-fragment="newComment">Login</a> to leave a comment!
+                                </h3>
+                            </header>
+                        }
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="col-lg-4">
+            <!-- Widget [Search Bar Widget]-->
+            <div class="widget search">
+                <header>
+                    <h3 class="h6">Search the blog</h3>
+                </header>
+                <form action="#" class="search-form">
+                    <div class="form-group">
+                        <input type="search" placeholder="What are you looking for?">
+                        <button type="submit" class="submit"><i class="icon-search"></i></button>
+                    </div>
+                </form>
+            </div>
+            <!-- Widget [Latest Posts Widget]        -->
+            <div class="widget latest-posts">
+                <header>
+                    <h3 class="h6">Latest Posts</h3>
+                </header>
+                <div class="blog-posts">
+                    <a href="#">
+                        <div class="item d-flex align-items-center">
+                            <div class="image"><img src="img/small-thumbnail-1.jpg" alt="..." class="img-fluid"></div>
+                            <div class="title">
+                                <strong>Alberto Savoia Can Teach You About</strong>
+                                <div class="d-flex align-items-center">
+                                    <div class="views"><i class="icon-eye"></i> 500</div>
+                                    <div class="comments"><i class="icon-comment"></i>12</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a><a href="#">
+                        <div class="item d-flex align-items-center">
+                            <div class="image"><img src="img/small-thumbnail-2.jpg" alt="..." class="img-fluid"></div>
+                            <div class="title">
+                                <strong>Alberto Savoia Can Teach You About</strong>
+                                <div class="d-flex align-items-center">
+                                    <div class="views"><i class="icon-eye"></i> 500</div>
+                                    <div class="comments"><i class="icon-comment"></i>12</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a><a href="#">
+                        <div class="item d-flex align-items-center">
+                            <div class="image"><img src="img/small-thumbnail-3.jpg" alt="..." class="img-fluid"></div>
+                            <div class="title">
+                                <strong>Alberto Savoia Can Teach You About</strong>
+                                <div class="d-flex align-items-center">
+                                    <div class="views"><i class="icon-eye"></i> 500</div>
+                                    <div class="comments"><i class="icon-comment"></i>12</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <!-- Widget [Categories Widget]-->
+            <div class="widget categories">
+                <header>
+                    <h3 class="h6">Categories</h3>
+                </header>
+                <div class="item d-flex justify-content-between"><a href="#">Growth</a><span>12</span></div>
+                <div class="item d-flex justify-content-between"><a href="#">Local</a><span>25</span></div>
+                <div class="item d-flex justify-content-between"><a href="#">Sales</a><span>8</span></div>
+                <div class="item d-flex justify-content-between"><a href="#">Tips</a><span>17</span></div>
+                <div class="item d-flex justify-content-between"><a href="#">Local</a><span>25</span></div>
+            </div>
+            <!-- Widget [Tags Cloud Widget]-->
+            <div class="widget tags">
+                <header>
+                    <h3 class="h6">Tags</h3>
+                </header>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="#" class="tag">#Business</a></li>
+                    <li class="list-inline-item"><a href="#" class="tag">#Technology</a></li>
+                    <li class="list-inline-item"><a href="#" class="tag">#Fashion</a></li>
+                    <li class="list-inline-item"><a href="#" class="tag">#Sports</a></li>
+                    <li class="list-inline-item"><a href="#" class="tag">#Economy</a></li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
 </div>

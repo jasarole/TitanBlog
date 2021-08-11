@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using TitanBlog.Data;
 using TitanBlog.Models;
 using TitanBlog.Services;
+using TitanBlog.Services.Interfaces;
 
 namespace TitanBlog.Controllers
 {
@@ -16,11 +17,25 @@ namespace TitanBlog.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly BasicSlugService _slugService;
+        private readonly IImageService _imageService;
 
-        public PostsController(ApplicationDbContext context, BasicSlugService slugService)
+        public PostsController(ApplicationDbContext context, BasicSlugService slugService, IImageService imageService)
         {
             _context = context;
             _slugService = slugService;
+            _imageService = imageService;
+        }
+
+        public async Task<IActionResult> BlogPostIndex(int? blogId)
+        {
+            if(blogId is null)
+            {
+                return NotFound();
+            }
+
+            var posts = await _context.Post.Where(posts => posts.BlogId == blogId && posts.Publish).ToListAsync();
+
+            return View(posts);
         }
 
         // GET: Posts
@@ -40,7 +55,9 @@ namespace TitanBlog.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Post.Include(p => p.Blog).FirstOrDefaultAsync(p => p.Slug == slug);
+            //eager loading
+            var post = await _context.Post.Include(p => p.Blog).Include(p => p.Comments).ThenInclude(c => c.Author).FirstOrDefaultAsync(p => p.Slug == slug);
+
             if (post == null)
             {
                 return NotFound();
@@ -80,7 +97,7 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BlogId,Title,Abstract,Content,Publish")] Post post)
+        public async Task<IActionResult> Create([Bind("BlogId,Title,Abstract,Content,Publish,Image")] Post post)
         {
             if (ModelState.IsValid)
             {
@@ -99,6 +116,9 @@ namespace TitanBlog.Controllers
                 }
 
                 post.Created = DateTime.Now;
+
+                post.ImageData = await _imageService.EncodeImageAsync(post.Image);
+                post.ImageType = _imageService.ContentType(post.Image);
 
                 _context.Add(post);
                 await _context.SaveChangesAsync();

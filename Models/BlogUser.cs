@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,6 +25,15 @@ namespace TitanBlog.Models
         //Properties for image
         public string ImageType { get; set; }
         public byte[] ImageData { get; set; }
+
+        [NotMapped]
+        public string FullName
+        {
+            get
+            {
+                return $"{FirstName} {LastName}";
+            }
+        }
 
         //Navigational properties
         public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();

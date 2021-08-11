@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using TitanBlog.Data;
 using TitanBlog.Models;
 
 namespace TitanBlog.Controllers
@@ -13,17 +15,20 @@ namespace TitanBlog.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger, IEmailSender emailSender, IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, IEmailSender emailSender, IConfiguration configuration, ApplicationDbContext context)
         {
             _logger = logger;
             _emailSender = emailSender;
             _configuration = configuration;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var blogs =  await _context.Blog.ToListAsync();
+            return View(blogs);
         }
 
         public IActionResult Contact()
