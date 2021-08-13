@@ -16,6 +16,7 @@ using TitanBlog.Data;
 using TitanBlog.Models;
 using TitanBlog.Services;
 using TitanBlog.Services.Interfaces;
+using TitanBlog.Classes;
 
 namespace TitanBlog
 {
@@ -33,7 +34,7 @@ namespace TitanBlog
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Connection.GetConnectionString(Configuration)));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -45,18 +46,16 @@ namespace TitanBlog
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            //Reguister the BasicSlugService class as a service
             services.AddScoped<BasicSlugService>();
-
             services.AddTransient<BasicSeedService>();
+            services.AddTransient<SearchService>();
 
+            //Register BasicImageService to be used when the interface IImageService is used
             services.AddTransient<IImageService, BasicImageService>();
 
             //Register GmailSmtpService concrete class to be used when IEmailSender is used
             services.AddTransient<IEmailSender, GmailSmtpService>();
 
-            //Register the service for searching
-            services.AddTransient<SearchService>();
 
         }
 

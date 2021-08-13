@@ -22,7 +22,8 @@ namespace TitanBlog
                                   .ServiceProvider
                                   .GetRequiredService<BasicSeedService>();
 
-            await seedService.SeedDataAsync();
+            //await seedService.SeedDataAsync();
+            await seedService.ManageDataAsync();
 
             host.Run();
         }
