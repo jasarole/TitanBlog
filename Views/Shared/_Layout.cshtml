@@ -48,9 +48,9 @@
                     <div class="close-btn"><i class="icon-close"></i></div>
                     <div class="row d-flex justify-content-center">
                         <div class="col-md-8">
-                            <form action="#">
+                            <form asp-controller="Posts" asp-action="SearchIndex">
                                 <div class="form-group">
-                                    <input type="search" name="search" id="search" placeholder="What are you looking for?">
+                                    <input type="search" name="searchStr" id="search" placeholder="Enter your search">
                                     <button type="submit" class="submit"><i class="icon-search-1"></i></button>
                                 </div>
                             </form>
@@ -80,6 +80,19 @@
                         <li class="nav-item">
                             <a asp-controller="Home" asp-action="Contact" class="nav-link ">Contact</a>
                         </li>
+
+                        @if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Comments" asp-action="UnmoderatedIndex" class="nav-link ">Unmoderated</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Comments" asp-action="ModeratedIndex" class="nav-link ">Moderated</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Comments" asp-action="DeletedIndex" class="nav-link ">Deleted</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                     <div class="navbar-text"><a href="#" class="search-btn"><i class="icon-search-1"></i></a></div>

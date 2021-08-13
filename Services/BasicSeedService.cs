@@ -37,9 +37,11 @@ namespace TitanBlog.Services
             }
 
             //Task 2: Create the necessary Roles if they don't exist
-            await _roleManager.CreateAsync(new IdentityRole("Administrator"));
-            await _roleManager.CreateAsync(new IdentityRole("Moderator"));
+            var modRole = new IdentityRole("Administrator");
+            await _roleManager.CreateAsync(modRole);
 
+            modRole = new IdentityRole("Moderator");
+            await _roleManager.CreateAsync(modRole);
         }
 
         private async Task SeedUsersAsync()

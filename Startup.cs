@@ -54,6 +54,10 @@ namespace TitanBlog
 
             //Register GmailSmtpService concrete class to be used when IEmailSender is used
             services.AddTransient<IEmailSender, GmailSmtpService>();
+
+            //Register the service for searching
+            services.AddTransient<SearchService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

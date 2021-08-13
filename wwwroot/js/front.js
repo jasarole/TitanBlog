@@ -88,6 +88,7 @@ $(document).ready(function () {
     $('.search-btn').on('click', function (e) {
         e.preventDefault();
         $('.search-area').fadeIn();
+        $('input[name="searchStr"]').focus();
     });
     $('.search-area .close-btn').on('click', function () {
         $('.search-area').fadeOut();

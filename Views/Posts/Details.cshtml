@@ -1,4 +1,5 @@
 ﻿@using TitanBlog.Services.Interfaces
+@using TitanBlog.Enums
 
 @model TitanBlog.Models.Post
 @inject IImageService _imageService
@@ -69,12 +70,64 @@
                                     <div class="comment-header d-flex justify-content-between">
                                         <div class="user d-flex align-items-center">
                                             <div class="image"><img src="@_imageService.DecodeImage(comment.Author.ImageData, comment.Author.ImageType)" alt="..." class="img-fluid rounded-circle"></div>
-                                            <div class="title"><strong>@comment.Author.FullName</strong><span class="date">@comment.Created.ToString("MMM dd, yyyy")</span></div>
+                                            <div class="title">
+                                                <strong>@comment.Author.FullName</strong>
+
+                                                @if (comment.Deleted != null)
+                                                {
+                                                    //if comment has been soft deleted
+                                                    <span class="date">
+                                                        Deleted: @comment.Deleted?.ToString("MMM dd, yyyy")
+                                                    </span>
+                                                }
+                                                else if (comment.Moderated != null)
+                                                {
+                                                    //if comment has been moderated
+                                                    <span class="date">
+                                                        Moderated: @comment.Moderated?.ToString("MMM dd, yyyy")
+                                                        Reason: @comment.ModerationReason
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="date">
+                                                        Created: @comment.Created.ToString("MMM dd, yyyy")
+                                                    </span>
+                                                }
+
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="comment-body">
-                                        <p>@comment.Body</p>
+                                        @if(comment.Moderated != null)
+                                        {
+                                            <p>@comment.ModeratedBody</p>
+                                        }
+                                        else
+                                        {
+                                            <p>@comment.Body</p>
+                                        }
                                     </div>
+
+                                    @if (User.IsInRole("Moderator"))
+                                    {
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col">
+                                                @if (comment.Moderated is null)
+                                                {
+                                                    <button class="btn btn-dark btn-sm btn-block" data-toggle="modal" data-target="#moderateModal" id="btnModerate">Moderate</button>
+                                                }
+                                            </div>
+                                            <div class="col">
+                                                <form asp-controller="Comments" asp-action="Delete" method="post">
+                                                    <input type="hidden" name="Slug" value="@Model.Slug" />
+                                                    <input type="hidden" name="Id" value="@comment.Id" />
+                                                    <button type="submit" class="btn btn-danger btn-sm btn-block">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             }
                         </div>
@@ -195,3 +248,70 @@
 
     </div>
 </div>
+
+<div class="modal" id="moderateModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Modal Heading</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form asp-controller="Comments" asp-action="Moderate">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <input type="hidden" name="Id" id="ModerateId" />
+                    <input type="hidden" name="Slug" id="ModerateSlug" />
+
+                    <div class="form-group">
+                        <label class="control-label">Original Comment</label>
+                        <input name="Body" id="CommentBody" class="form-control" readonly />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Moderated Comment</label>
+                        <input name="ModeratedBody" id="ModeratedBody" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Reason For Moderation</label>
+                        <select class="form-control" name="ModerationReason" id="ModerationReason" asp-items="Html.GetEnumSelectList<ModerationType>()"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-sm btn-dark btn-block" />
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        document.getElementById("btnModerate").addEventListener("click", function () {
+
+            document.getElementById("ModerateId").value =
+                $(this).closest(".row").find("[Name='Id']").val();
+
+            document.getElementById("ModerateSlug").value =
+                $(this).closest(".row").find("[Name='Slug']").val();
+
+            $("#CommentBody").val(
+                $(this).closest(".comment").find(".comment-body").find("p").text()
+            )
+
+        });
+    </script>
+}

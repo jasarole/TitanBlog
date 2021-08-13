@@ -35,8 +35,5 @@ namespace TitanBlog.Models
             }
         }
 
-        //Navigational properties
-        public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
-
     }
 }

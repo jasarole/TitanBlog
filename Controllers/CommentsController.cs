@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,6 +21,27 @@ namespace TitanBlog.Controllers
         {
             _context = context;
             _userManager = userManager;
+        }
+
+        [Authorize(Roles = "Moderator, Administrator")]
+        public async Task<IActionResult> UnmoderatedIndex()
+        {
+            var comments = await _context.Comment.Where(c => c.Moderated == null && c.Deleted == null).ToListAsync();
+            return View("Index", comments);
+        }
+
+        [Authorize(Roles = "Moderator, Administrator")]
+        public async Task<IActionResult> ModeratedIndex()
+        {
+            var comments = await _context.Comment.Where(c => c.Moderated != null && c.Deleted == null).ToListAsync();
+            return View("Index", comments);
+        }
+
+        [Authorize(Roles = "Moderator, Administrator")]
+        public async Task<IActionResult> DeletedIndex()
+        {
+            var comments = await _context.Comment.Where(c => c.Deleted != null).ToListAsync();
+            return View("Index", comments);
         }
 
         // GET: Comments
@@ -104,7 +126,7 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PostId,AuthorId,Created,Updated,Body")] Comment comment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PostId,AuthorId,Created,Body")] Comment comment)
         {
             if (id != comment.Id)
             {
@@ -138,6 +160,46 @@ namespace TitanBlog.Controllers
             return View(comment);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Moderate(int id, [Bind("Id,ModeratedBody,ModerationReason")] Comment comment, string slug)
+        {
+            if (id != comment.Id)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                comment.Moderated = DateTime.Now;
+                comment.ModeratorId = _userManager.GetUserId(User);
+
+                _context.Comment.Attach(comment);
+
+                _context.Entry(comment).Property(x => x.ModeratedBody).IsModified = true;
+                _context.Entry(comment).Property(x => x.ModerationReason).IsModified = true;
+                _context.Entry(comment).Property(x => x.Moderated).IsModified = true;
+                _context.Entry(comment).Property(x => x.ModeratorId).IsModified = true;
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CommentExists(comment.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;                      
+                }
+            }
+
+                return RedirectToAction("Details", "Posts", new { slug }, "postComments");
+
+            }
+
+
         // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -161,12 +223,16 @@ namespace TitanBlog.Controllers
         // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string slug)
         {
             var comment = await _context.Comment.FindAsync(id);
             _context.Comment.Remove(comment);
+            comment.Deleted = DateTime.Now;
+            _context.Update(comment);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction("Details", "Post", new { slug }, "postComments");
+
         }
 
         private bool CommentExists(int id)

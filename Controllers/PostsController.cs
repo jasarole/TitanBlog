@@ -18,12 +18,14 @@ namespace TitanBlog.Controllers
         private readonly ApplicationDbContext _context;
         private readonly BasicSlugService _slugService;
         private readonly IImageService _imageService;
+        private readonly SearchService _searchService;
 
-        public PostsController(ApplicationDbContext context, BasicSlugService slugService, IImageService imageService)
+        public PostsController(ApplicationDbContext context, BasicSlugService slugService, IImageService imageService, SearchService searchService)
         {
             _context = context;
             _slugService = slugService;
             _imageService = imageService;
+            _searchService = searchService;
         }
 
         public async Task<IActionResult> BlogPostIndex(int? blogId)
@@ -46,6 +48,13 @@ namespace TitanBlog.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SearchIndex(string searchStr)
+        {
+            var posts = _searchService.ContentSearch(searchStr);
+            return View("BlogPostIndex", posts);
+        }
+
 
         public async Task<IActionResult> Details(string slug)
         {
@@ -56,7 +65,11 @@ namespace TitanBlog.Controllers
             }
 
             //eager loading
-            var post = await _context.Post.Include(p => p.Blog).Include(p => p.Comments).ThenInclude(c => c.Author).FirstOrDefaultAsync(p => p.Slug == slug);
+            var post = await _context.Post
+                .Include(p => p.Blog)
+                .Include(p => p.Comments.Where(p=>p.Deleted == null))
+                .ThenInclude(c => c.Author)
+                .FirstOrDefaultAsync(p => p.Slug == slug);
 
             if (post == null)
             {
