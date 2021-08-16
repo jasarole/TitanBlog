@@ -73,17 +73,17 @@
                             <a asp-controller="Home" asp-action="Index" class="nav-link ">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a asp-controller="Blogs" asp-action="Index" class="nav-link ">Blogs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-controller="Posts" asp-action="Index" class="nav-link ">Posts</a>
-                        </li>
-                        <li class="nav-item">
                             <a asp-controller="Home" asp-action="Contact" class="nav-link ">Contact</a>
                         </li>
 
                         @if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
                         {
+                            <li class="nav-item">
+                                <a asp-controller="Blogs" asp-action="Index" class="nav-link ">Blogs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Posts" asp-action="Index" class="nav-link ">Posts</a>
+                            </li>
                             <li class="nav-item">
                                 <a asp-controller="Comments" asp-action="UnmoderatedIndex" class="nav-link ">Unmoderated</a>
                             </li>

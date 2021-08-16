@@ -4,37 +4,38 @@
     ViewData["Title"] = "Contact";
 }
 
-<h1>Contact</h1>
+<div class="container p-5">
+    <h1>Contact Me</h1>
 
-<div class="row">
-    <div class="col">
-        <form asp-action="Contact">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="emailName" class="control-label"></label>
-                <input asp-for="emailName" class="form-control" />
-                <span asp-validation-for="emailName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="emailAddress" class="control-label"></label>
-                <input asp-for="emailAddress" class="form-control" />
-                <span asp-validation-for="emailAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="emailSubject" class="control-label"></label>
-                <input asp-for="emailSubject" class="form-control" />
-                <span asp-validation-for="emailSubject" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="emailBody" class="control-label"></label>
-                <textarea asp-for="emailBody" rows="5" class="form-control"></textarea>
-                <span asp-validation-for="emailBody" class="text-danger"></span>
-            </div>
+    <div class="row">
+        <div class="col">
+            <form asp-action="Contact">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="emailName" class="control-label"></label>
+                    <input asp-for="emailName" class="form-control" />
+                    <span asp-validation-for="emailName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="emailAddress" class="control-label"></label>
+                    <input asp-for="emailAddress" class="form-control" />
+                    <span asp-validation-for="emailAddress" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="emailSubject" class="control-label"></label>
+                    <input asp-for="emailSubject" class="form-control" />
+                    <span asp-validation-for="emailSubject" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="emailBody" class="control-label"></label>
+                    <textarea asp-for="emailBody" rows="5" class="form-control"></textarea>
+                    <span asp-validation-for="emailBody" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Send Message" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="form-group">
+                    <input type="submit" value="Send Message" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
