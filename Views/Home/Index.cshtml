@@ -1,18 +1,17 @@
 ﻿@using TitanBlog.Services.Interfaces
 
-@model  IEnumerable<Blog>
-@inject IImageService _imageService 
-    
-    <!-- Hero Section-->
-<section style="background: url(/images/code_bg.jpeg); background-size: cover; background-position: center center" class="hero">
+@model IEnumerable<Blog>
+@inject IImageService _imageService
+<!-- Hero Section-->
+<section style="background: url(/images/code_bg.jpeg); cover; background-position: center center" class="hero border-bottom">
     <div class="container">
         <div class="row">
-            <div class="col-lg-7">
-                <span class="bg-dark mb-2 p-2">
-                    <h1> File <i class="fa fa-caret-right"></i> New <i class="fa fa-caret-right"></i> Project </h1>
+            <div class="col-lg-9">
+                <span class="bg-dark mb-2 p-2 shadow-lg">
+                    <h1 style="color: #90E70D "> File <i class="fa fa-caret-right"></i> New <i class="fa fa-caret-right"></i> Project </h1>
                 </span>
-                <span class="bg-dark p-2">
-                    <a href="#" class="hero-link">A blog about all things tech and dev</a>
+                <span class="bg-dark p-2 shadow-lg">
+                    <h2 class="text-uppercase" style="color: #F2FF03 ">A blog about all things tech and dev</h2>
                 </span>
             </div>
         </div><a href=".intro" class="continue link-scroll"><i class="fa fa-long-arrow-down"></i> Scroll Down</a>
@@ -23,9 +22,9 @@
 <section class="intro">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8">
-                <h2 class="h3">Some great intro here</h2>
-                <p class="text-big">Place a nice <strong>introduction</strong> here <strong>to catch reader's attention</strong>. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderi.</p>
+            <div class="bg-dark p-2 col-lg-8">
+                <h2 class="h3" style="color: #00A7DB; ">The easiest part of coding is starting a new project.</h2>
+                <p class="text-big">Welcome to the blog of <strong>Jason Lynn</strong> owner of  <a href="http://jasondevs.com" style="color:#F2FF03;"><strong>jasondevs.com</strong></a>. I'm a full-stack developer from North Carolina. I primarily develop MVC applications with .NET and C#, but I tend to cover the entire stack in every project. I have previous experience with graphic design so I never forget about the UX/UI! If you'd like to read some of my opinions check out the blog topics below. </p>
             </div>
         </div>
     </div>
@@ -54,7 +53,8 @@
                                         <div class="avatar"><img src="~/images/profile-img.png" alt="..." class="img-fluid"></div>
                                         <div class="title"><span>Jason Lynn</span></div>
                                     </a>
-                                    <div class="date"><i class="icon-clock"></i>
+                                    <div class="date">
+                                        <i class="icon-clock"></i>
                                         @blog.Created.ToString("MMM dd, yyyy")
                                     </div>
                                 </footer>
@@ -83,7 +83,8 @@
                                         <div class="avatar"><img src="~/images/profile-img.png" alt="..." class="img-fluid"></div>
                                         <div class="title"><span>Jason Lynn</span></div>
                                     </a>
-                                    <div class="date"><i class="icon-clock"></i>
+                                    <div class="date">
+                                        <i class="icon-clock"></i>
                                         @blog.Created.ToString("MMM dd, yyyy")
                                     </div>
                                 </footer>
@@ -100,7 +101,7 @@
 </section>
 
 <!-- Divider Section-->
-<section style="background: url(/images/divider-bg.jpg); background-size: cover; background-position: center bottom" class="divider">
+<!--<section style="background: url(/images/divider-bg.jpg); background-size: cover; background-position: center bottom" class="divider">
     <div class="container">
         <div class="row">
             <div class="col-md-7">
@@ -108,10 +109,9 @@
             </div>
         </div>
     </div>
-</section>
-
+</section>-->
 <!-- Latest Posts -->
-<section class="latest-posts">
+<!--<section class="latest-posts">
     <div class="container">
         <header>
             <h2>Latest from the blog</h2>
@@ -156,10 +156,9 @@
             </div>
         </div>
     </div>
-</section>
-
+</section>-->
 <!-- Newsletter Section-->
-<section class="newsletter no-padding-top">
+<!--<section class="newsletter no-padding-top">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -178,10 +177,9 @@
             </div>
         </div>
     </div>
-</section>
-
+</section>-->
 <!-- Gallery Section-->
-<section class="gallery no-padding">
+<!--<section class="gallery no-padding">
     <div class="row">
         <div class="mix col-lg-3 col-md-3 col-sm-6">
             <div class="item">
@@ -216,4 +214,4 @@
             </div>
         </div>
     </div>
-</section>
+</section>-->
