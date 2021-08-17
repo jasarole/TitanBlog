@@ -10,6 +10,7 @@ using TitanBlog.Data;
 using TitanBlog.Models;
 using TitanBlog.Services;
 using TitanBlog.Services.Interfaces;
+using X.PagedList;
 
 namespace TitanBlog.Controllers
 {
@@ -41,11 +42,17 @@ namespace TitanBlog.Controllers
         }
 
         // GET: Posts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
-            //var applicationDbContext = _context.Post.Include(p => p.Blog);
-            var applicationDbContext = _context.Post.Where(p => p.Publish).Include(p => p.Blog);
-            return View(await applicationDbContext.ToListAsync());
+            var pageNumber = page ?? 1;
+            var pageSize = 4;
+
+            var posts = await _context.Post.Where(p => p.Publish)
+                                           .Include(p => p.Blog)
+                                           .OrderByDescending(p =>p.Created)
+                                           .ToPagedListAsync(pageNumber, pageSize);
+            
+            return View(posts);
         }
 
         [HttpPost]
@@ -143,18 +150,21 @@ namespace TitanBlog.Controllers
 
         // GET: Posts/Edit/5
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string slug)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(slug))
             {
                 return NotFound();
             }
 
-            var post = await _context.Post.FindAsync(id);
+            //eager loading
+            var post = await _context.Post.FirstOrDefaultAsync(p => p.Slug == slug);
+
             if (post == null)
             {
                 return NotFound();
             }
+
             ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name", post.BlogId);
             return View(post);
         }

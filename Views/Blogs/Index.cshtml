@@ -67,23 +67,24 @@
             }
         </tbody>
     </table>
-</div>
 
-
-<div class="row">
-    <div class="col h3 text-center">
-        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    <!-- Page List Label -->
+    <div class="row">
+        <div class="col h3 text-center">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        </div>
     </div>
-</div>
 
-<!-- Paged List Core -->
-<div class="row">
-    <div class="col d-flex justify-content-center mb-5">
-        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
-            new PagedListRenderOptions
-            {
-                LiElementClasses = new string[] { "page-item" },
-                PageClasses = new string[] { "page-link" }
-            })
+    <!-- Paged List Core -->
+    <div class="row">
+        <div class="col d-flex justify-content-center mb-5">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+                new PagedListRenderOptions
+                {
+                    LiElementClasses = new string[] { "page-item" },
+                    PageClasses = new string[] { "page-link" }
+                })
+        </div>
     </div>
+
 </div>

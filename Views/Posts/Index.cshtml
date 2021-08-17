@@ -1,4 +1,11 @@
-﻿@model IEnumerable<TitanBlog.Models.Post>
+﻿@using TitanBlog.Models
+@using TitanBlog.Services.Interfaces
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+
+@model IPagedList<Post>
+@inject IImageService imageService
 
 @{
     ViewData["Title"] = "Index";
@@ -16,46 +23,35 @@
         <table class="table table-striped">
             <thead class="table-dark">
                 <tr>
+                    <th>Image</th>
                     <th>
                         @*@Html.DisplayNameFor(model => model.Blog)*@
                         Blog Name
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Title)
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Abstract)
-                    </th>
-                    @*<th>
-                            @Html.DisplayNameFor(model => model.Content)
-                        </th>*@
-                    <th>
-                        @Html.DisplayNameFor(model => model.Created)
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().Abstract)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Updated)
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().Created)
                     </th>
-                    @*<th>
-                            @Html.DisplayNameFor(model => model.Slug)
-                        </th>
-                        <th>
-                                @Html.DisplayNameFor(model => model.ImageType)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ImageData)
-                            </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().Updated)
+                    </th>
 
+                    @*Empty header for edit/details/delete links*@
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-
-                    //check to see if the post is ready to publish
-                    //@if (item.Publish == true)
-                    //{
                     <tr>
+                        <td>
+                            <img src="@imageService.DecodeImage(item.ImageData, item.ImageType)" class="img-fluid" />
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Blog.Name)
                         </td>
@@ -65,25 +61,12 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Abstract)
                         </td>
-                        @*<td>
-                                @Html.Raw(item.Content)
-                            </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.Created)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Updated)
                         </td>
-                        @*<td>
-                                @Html.DisplayFor(modelItem => item.Slug)
-                            </td>
-                            <td>
-                                    @Html.DisplayFor(modelItem => item.ImageType)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ImageData)
-                                </td>*@
-
                         <td>
                             <a asp-action="Edit" asp-route-slug="@item.Slug">Edit</a> |
                             <a asp-action="Details" asp-route-slug="@item.Slug">Details</a> |
@@ -95,4 +78,24 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Page List Label -->
+    <div class="row">
+        <div class="col h3 text-center">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        </div>
+    </div>
+
+    <!-- Paged List Core -->
+    <div class="row">
+        <div class="col d-flex justify-content-center mb-5">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+                new PagedListRenderOptions
+                {
+                    LiElementClasses = new string[] { "page-item" },
+                    PageClasses = new string[] { "page-link" }
+                })
+        </div>
+    </div>
+
 </div>
