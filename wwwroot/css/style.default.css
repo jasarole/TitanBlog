@@ -13,6 +13,10 @@ Bootstrap Temple Blog Template
 * =====================
 */
 
+.note-editing-area {
+    color: black;
+}
+
 .table {
     color: #f2f2f2;
 }
