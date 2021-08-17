@@ -174,7 +174,7 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Created,Slug,Publish")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Created,Slug,Publish,Image")] Post post)
         {
             if (id != post.Id)
             {
@@ -200,6 +200,9 @@ namespace TitanBlog.Controllers
                             return View(post);
                         }
                     }
+
+                    post.ImageType = _imageService.ContentType(post.Image);
+                    post.ImageData = await _imageService.EncodeImageAsync(post.Image);
 
                     post.Updated = DateTime.Now;
 
