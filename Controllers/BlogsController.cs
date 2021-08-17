@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using TitanBlog.Data;
 using TitanBlog.Models;
 using TitanBlog.Services.Interfaces;
+using X.PagedList;
 
 namespace TitanBlog.Controllers
 {
@@ -24,10 +25,22 @@ namespace TitanBlog.Controllers
         }
 
         // GET: Blogs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
-            
-            return View(await _context.Blog.ToListAsync());
+            //Using null coalescing operator
+            var pageNumber = page ?? 1;
+            var pageSize = 4;
+
+            var blogs = await _context.Blog
+                                .OrderByDescending(b => b.Created)
+                                .ToPagedListAsync(pageNumber, pageSize);
+
+            return View(blogs);
+
+
+            //currently we are feeding the view a List of records
+            //That List<> satisfies the IEnumerable type
+            //return View(await _context.Blog.ToListAsync());
         }
 
         // GET: Blogs/Details/5
