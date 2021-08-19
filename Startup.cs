@@ -83,7 +83,7 @@ namespace TitanBlog
 
             app.UseEndpoints(endpoints =>
             {
-                //Adding custom slut route
+                //Adding custom slug route
                 endpoints.MapControllerRoute(
                     name: "SlugRoute",
                     pattern: "BlogPosts/UrlFriendly/{slug}",

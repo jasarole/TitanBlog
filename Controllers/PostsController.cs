@@ -29,9 +29,11 @@ namespace TitanBlog.Controllers
             _searchService = searchService;
         }
 
-        public async Task<IActionResult> PostsWithTag (string text)
+        public async Task<IActionResult> PostsWithTag (string text, int? page)
         {
-            var postsWithTag = _context.Post.Where(p => p.Tags.Any(t => t.Text == text));
+            var pageNumber = page ?? 1;
+            var pageSize = 4;
+            var postsWithTag = await _context.Post.Where(p => p.Tags.Any(t => t.Text == text)).ToPagedListAsync(pageNumber, pageSize);
             return View("Index", postsWithTag);
         }
 
@@ -85,9 +87,14 @@ namespace TitanBlog.Controllers
                 .Include(p=>p.Tags)
                 .FirstOrDefaultAsync(p => p.Slug == slug);
 
+            //get all tags to send to view
             var allTags = await _context.Tag.Select(t => t.Text).ToListAsync();
             ViewData["AllTags"] = allTags;
 
+            //TODO: get latest 3 blog posts to send to view
+            var latestPosts = _context.Post.Include(p => p.Created);
+            ViewData["LatestPosts"] = latestPosts;
+            
             if (post == null)
             {
                 return NotFound();

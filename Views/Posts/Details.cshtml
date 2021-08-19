@@ -198,8 +198,9 @@
                     </a>
                 </div>
             </div>
+
             <!-- Widget [Categories Widget]-->
-            <div class="widget categories">
+            @*<div class="widget categories">
                 <header>
                     <h3 class="h6">Categories</h3>
                 </header>
@@ -208,7 +209,8 @@
                 <div class="item d-flex justify-content-between"><a href="#">Sales</a><span>8</span></div>
                 <div class="item d-flex justify-content-between"><a href="#">Tips</a><span>17</span></div>
                 <div class="item d-flex justify-content-between"><a href="#">Local</a><span>25</span></div>
-            </div>
+            </div>*@
+
             <!-- Widget [Tags Cloud Widget]-->
             <div class="widget tags">
                 <header>
@@ -218,7 +220,9 @@
                     
                     @foreach (var tag in ViewData["AllTags"] as List<string>)
                     {
-                        <li class="list-inline-item"><a href="#" class="tag">#@tag </a></li>
+                    <li class="list-inline-item">
+                        <a asp-action="PostsWithTag" asp-controller="Posts" asp-route-text="@tag" class="tag">#@tag</a>
+                    </li>
                     }
 
                 </ul>
