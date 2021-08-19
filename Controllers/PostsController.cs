@@ -29,6 +29,12 @@ namespace TitanBlog.Controllers
             _searchService = searchService;
         }
 
+        public async Task<IActionResult> PostsWithTag (string text)
+        {
+            var postsWithTag = _context.Post.Where(p => p.Tags.Any(t => t.Text == text));
+            return View("Index", postsWithTag);
+        }
+
         public async Task<IActionResult> BlogPostIndex(int? blogId)
         {
             if(blogId is null)
@@ -76,6 +82,7 @@ namespace TitanBlog.Controllers
                 .Include(p => p.Blog)
                 .Include(p => p.Comments.Where(p=>p.Deleted == null))
                 .ThenInclude(c => c.Author)
+                .Include(p=>p.Tags)
                 .FirstOrDefaultAsync(p => p.Slug == slug);
 
             if (post == null)
@@ -117,7 +124,7 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BlogId,Title,Abstract,Content,Publish,Image")] Post post)
+        public async Task<IActionResult> Create([Bind("BlogId,Title,Abstract,Content,Publish,Image")] Post post, List<string> TagValues)
         {
             if (ModelState.IsValid)
             {
@@ -140,8 +147,17 @@ namespace TitanBlog.Controllers
                 post.ImageData = await _imageService.EncodeImageAsync(post.Image);
                 post.ImageType = _imageService.ContentType(post.Image);
 
+                foreach (var tag in TagValues)
+                {
+                    post.Tags.Add(new Tag()
+                    {
+                        Text = tag
+                    });
+                }
+
                 _context.Add(post);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name", post.BlogId);
@@ -158,13 +174,14 @@ namespace TitanBlog.Controllers
             }
 
             //eager loading
-            var post = await _context.Post.FirstOrDefaultAsync(p => p.Slug == slug);
+            var post = await _context.Post.Include(p=>p.Tags).FirstOrDefaultAsync(p => p.Slug == slug);
 
             if (post == null)
             {
                 return NotFound();
             }
 
+            ViewData["TagValues"] = string.Join(",", post.Tags.Select(t => t.Text));
             ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name", post.BlogId);
             return View(post);
         }
@@ -174,7 +191,7 @@ namespace TitanBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Created,Slug,Publish,Image")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Created,Slug,Publish,Image")] Post post, List<string> tagValues)
         {
             if (id != post.Id)
             {
@@ -183,15 +200,16 @@ namespace TitanBlog.Controllers
 
             if (ModelState.IsValid)
             {
+                var originalPost = await _context.Post.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == post.Id);
                 try
                 {
                     var newSlug = _slugService.UrlFriendly(post.Title);
 
-                    if (newSlug != post.Slug)
+                    if (newSlug != originalPost.Slug)
                     {
                         if (_slugService.IsUnique(newSlug))
                         {
-                            post.Slug = newSlug;
+                            originalPost.Slug = newSlug;
                         }
                         else
                         {
@@ -201,17 +219,30 @@ namespace TitanBlog.Controllers
                         }
                     }
 
+                    //Tags Section Start
+                    //Get the Post and Include the Tags
+                    _context.Tag.RemoveRange(originalPost.Tags);
+
+                    foreach (var tag in tagValues)
+                    {
+                        originalPost.Tags.Add(new Tag()
+                        {
+                            Text = tag
+                        });
+                    }
+                    //Tags Section End
+
+                    originalPost.Updated = DateTime.Now;
+
                     post.ImageType = _imageService.ContentType(post.Image);
                     post.ImageData = await _imageService.EncodeImageAsync(post.Image);
 
-                    post.Updated = DateTime.Now;
-
-                    _context.Update(post);
+                    //_context.Update(post);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(post.Id))
+                    if (!PostExists(originalPost.Id))
                     {
                         return NotFound();
                     }
@@ -222,6 +253,7 @@ namespace TitanBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["TagValues"] = string.Join(",", post.Tags.Select(t => t.Text));
             ViewData["BlogId"] = new SelectList(_context.Blog, "Id", "Name", post.BlogId);
             return View(post);
         }
