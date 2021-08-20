@@ -46,6 +46,11 @@ namespace TitanBlog.Controllers
 
             var posts = await _context.Post.Where(posts => posts.BlogId == blogId && posts.Publish).ToListAsync();
 
+            //get latest 3 blog posts to send to view
+            var allPosts = await _context.Post.Include(p=>p.Comments).OrderByDescending(p => p.Created).ToListAsync();
+            var latestPosts = allPosts.Take(3);
+            ViewData["LatestPosts"] = await latestPosts.ToListAsync();
+
             return View(posts);
         }
 
@@ -67,7 +72,7 @@ namespace TitanBlog.Controllers
         public async Task<IActionResult> SearchIndex(string searchStr)
         {
             //get latest 3 blog posts to send to view
-            var allPosts = await _context.Post.OrderByDescending(p => p.Created).ToListAsync();
+            var allPosts = await _context.Post.Include(p=>p.Comments).OrderByDescending(p => p.Created).ToListAsync();
             var latestPosts = allPosts.Take(3);
             ViewData["LatestPosts"] = await latestPosts.ToListAsync();
 
@@ -97,7 +102,7 @@ namespace TitanBlog.Controllers
             ViewData["AllTags"] = allTags;
                 
             //get latest 3 blog posts to send to view
-            var allPosts = await _context.Post.OrderByDescending(p=>p.Created).ToListAsync();
+            var allPosts = await _context.Post.Include(p=>p.Comments).OrderByDescending(p=>p.Created).ToListAsync();
             var latestPosts = allPosts.Take(3);
             ViewData["LatestPosts"] = await latestPosts.ToListAsync();
             

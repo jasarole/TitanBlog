@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using TitanBlog.Data;
 using TitanBlog.Models;
+using X.PagedList;
 
 namespace TitanBlog.Controllers
 {
@@ -27,6 +29,10 @@ namespace TitanBlog.Controllers
 
         public async Task<IActionResult> Index()
         {
+            //get latest 3 blog posts to send to view
+            var allPosts = await _context.Post.Include(p => p.Comments).OrderByDescending(p => p.Created).ToListAsync();
+            var latestPosts = allPosts.Take(3);
+            ViewData["LatestPosts"] = await latestPosts.ToListAsync();
             var blogs =  await _context.Blog.ToListAsync();
             return View(blogs);
         }

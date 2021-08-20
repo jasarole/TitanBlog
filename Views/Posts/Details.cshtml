@@ -185,7 +185,7 @@
                 <div class="blog-posts">
                     @foreach (var item in (List<Post>)ViewData["LatestPosts"])
                     {
-                        <a asp-action="Details" asp-controller="Posts" asp-route-id="@item.Id">
+                        <a asp-action="Details" asp-controller="Posts" asp-route-slug="@item.Slug">
                             <div class="item d-flex align-items-center">
                                 <div class="image"><img src="@_imageService.DecodeImage(item.ImageData, item.ImageType)" alt="..." class="img-fluid"></div>
                                 <div class="title">

@@ -75,7 +75,7 @@
                 <div class="blog-posts">
                     @foreach (var item in (List<Post>)ViewData["LatestPosts"])
                     {
-                        <a asp-action="Index" asp-controller="Posts" asp-route-id="@item.Id">
+                        <a asp-action="Details" asp-controller="Posts" asp-route-slug="@item.Slug">
                             <div class="item d-flex align-items-center">
                                 <div class="image"><img src="@_imageService.DecodeImage(item.ImageData, item.ImageType)" alt="..." class="img-fluid"></div>
                                 <div class="title">
@@ -91,7 +91,7 @@
                 </div>
             </div>
             <!-- Widget [Categories Widget]-->
-            <div class="widget categories">
+            <!--<div class="widget categories">
                 <header>
                     <h3 class="h6">Categories</h3>
                 </header>
@@ -100,7 +100,7 @@
                 <div class="item d-flex justify-content-between"><a href="#">Sales</a><span>8</span></div>
                 <div class="item d-flex justify-content-between"><a href="#">Tips</a><span>17</span></div>
                 <div class="item d-flex justify-content-between"><a href="#">Local</a><span>25</span></div>
-            </div>
+            </div>-->
             <!-- Widget [Tags Cloud Widget]-->
             <div class="widget tags">
                 <header>
