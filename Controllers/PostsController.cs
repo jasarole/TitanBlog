@@ -33,7 +33,7 @@ namespace TitanBlog.Controllers
         {
             var pageNumber = page ?? 1;
             var pageSize = 4;
-            var postsWithTag = await _context.Post.Where(p => p.Tags.Any(t => t.Text == text)).ToPagedListAsync(pageNumber, pageSize);
+            var postsWithTag = await _context.Post.Where(p => p.Tags.Any(t => t.Text.ToUpper() == text)).ToPagedListAsync(pageNumber, pageSize);
             return View("Index", postsWithTag);
         }
 
@@ -66,6 +66,11 @@ namespace TitanBlog.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchIndex(string searchStr)
         {
+            //get latest 3 blog posts to send to view
+            var allPosts = await _context.Post.OrderByDescending(p => p.Created).ToListAsync();
+            var latestPosts = allPosts.Take(3);
+            ViewData["LatestPosts"] = await latestPosts.ToListAsync();
+
             var posts = _searchService.ContentSearch(searchStr);
             return View("BlogPostIndex", posts);
         }
@@ -88,12 +93,13 @@ namespace TitanBlog.Controllers
                 .FirstOrDefaultAsync(p => p.Slug == slug);
 
             //get all tags to send to view
-            var allTags = await _context.Tag.Select(t => t.Text).ToListAsync();
+            var allTags = await _context.Tag.Select(t => t.Text.ToUpper()).Distinct().ToListAsync();
             ViewData["AllTags"] = allTags;
-
-            //TODO: get latest 3 blog posts to send to view
-            var latestPosts = _context.Post.Include(p => p.Created);
-            ViewData["LatestPosts"] = latestPosts;
+                
+            //get latest 3 blog posts to send to view
+            var allPosts = await _context.Post.OrderByDescending(p=>p.Created).ToListAsync();
+            var latestPosts = allPosts.Take(3);
+            ViewData["LatestPosts"] = await latestPosts.ToListAsync();
             
             if (post == null)
             {
@@ -143,8 +149,8 @@ namespace TitanBlog.Controllers
                 {
                     post.Tags.Add(new Tag()
                     {
-                        Text = tag
-                    });
+                        Text = tag.ToUpper()
+                    }) ;
                 }
 
                 _context.Add(post);
@@ -219,7 +225,7 @@ namespace TitanBlog.Controllers
                     {
                         originalPost.Tags.Add(new Tag()
                         {
-                            Text = tag
+                            Text = tag.ToUpper()
                         });
                     }
                     //Tags Section End
