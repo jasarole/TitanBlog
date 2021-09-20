@@ -78,11 +78,39 @@
 
                         @if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
                         {
-                            <li class="nav-item">
-                                <a asp-controller="Blogs" asp-action="Index" class="nav-link ">Blogs</a>
+                        <li>
+                            <div class="dropdown">
+                                <button class="btn btn-dark dropdown-toggle" type="button" id="ddModControls" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Mod Controls
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="ddModControls">
+                                    <h6 class="dropdown-header border-bottom">Comment Actions</h6>
+                                    <a asp-controller="Comments" asp-action="UnmoderatedIndex" class="dropdown-item">Unmoderated</a>
+                                    <a asp-controller="Comments" asp-action="ModeratedIndex" class="dropdown-item">Moderated</a>
+                                    <a asp-controller="Comments" asp-action="DeletedIndex" class="dropdown-item">Deleted</a>
+                                </div>
+                            </div>
+                        </li>
+                        }
+                        @if (User.IsInRole("Administrator"))
+                        {
+                        <li>
+                            <div class="dropdown">
+                                <button class="btn btn-dark dropdown-toggle" type="button" id="ddAdminControls" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Admin Controls
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="ddAdminControls">
+                                    <a asp-controller="Blogs" asp-action="Index" class="dropdown-item ">All Blogs</a>
+                                    <a asp-controller="Posts" asp-action="Index" class="dropdown-item">All Posts</a>
+                                </div>
+                            </div>
+                        </li>
+                        }
+                            @*<li class="nav-item">
+                                <a asp-controller="Blogs" asp-action="Index" class="nav-link ">All Blogs</a>
                             </li>
                             <li class="nav-item">
-                                <a asp-controller="Posts" asp-action="Index" class="nav-link ">Posts</a>
+                                <a asp-controller="Posts" asp-action="Index" class="nav-link ">All Posts</a>
                             </li>
                             <li class="nav-item">
                                 <a asp-controller="Comments" asp-action="UnmoderatedIndex" class="nav-link ">Unmoderated</a>
@@ -92,8 +120,7 @@
                             </li>
                             <li class="nav-item">
                                 <a asp-controller="Comments" asp-action="DeletedIndex" class="nav-link ">Deleted</a>
-                            </li>
-                        }
+                            </li>*@
                     </ul>
                     <partial name="_LoginPartial" />
                     <div class="navbar-text"><a href="#" class="search-btn"><i class="icon-search-1"></i></a></div>
