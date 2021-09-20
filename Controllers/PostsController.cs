@@ -107,26 +107,26 @@ namespace TitanBlog.Controllers
             ViewData["LatestPosts"] = await latestPosts.ToListAsync();
 
             //get prev and next post for same blogId
-            var created = post.Created;
-            var nextPost = _context.Post.Where(b => b.BlogId == post.BlogId)
-                                        .Where(post => post.Publish)
-                                        .Include(post => post.Tags)
-                                        .OrderBy(post => post.Created)
-                                        .ToList()
-                                        .SkipWhile(p => p.Created < created)
-                                        .Skip(1)
-                                        .Take(1)
-                                        .FirstOrDefault();
-            if(post != null)
-            {
-                post.NextPost.Title = nextPost.Title;
-                post.NextPost.Slug = nextPost.Slug;
-                post.NextPost.Tags = nextPost.Tags;
-            }
-            else
-            {
-                post.PrevPost = null;
-            }
+            //var created = post.Created;
+            //var nextPost = _context.Post.Where(b => b.BlogId == post.BlogId)
+            //                            .Where(post => post.Publish)
+            //                            .Include(post => post.Tags)
+            //                            .OrderBy(post => post.Created)
+            //                            .ToList()
+            //                            .SkipWhile(p => p.Created < created)
+            //                            .Skip(1)
+            //                            .Take(1)
+            //                            .FirstOrDefault();
+            //if(post != null)
+            //{
+            //    post.NextPost.Title = nextPost.Title;
+            //    post.NextPost.Slug = nextPost.Slug;
+            //    post.NextPost.Tags = nextPost.Tags;
+            //}
+            //else
+            //{
+            //    post.PrevPost = null;
+            //}
             // end prev and next post section //
 
             

@@ -17,6 +17,7 @@ using TitanBlog.Models;
 using TitanBlog.Services;
 using TitanBlog.Services.Interfaces;
 using TitanBlog.Classes;
+using System.IO;
 
 namespace TitanBlog
 {
@@ -30,6 +31,10 @@ namespace TitanBlog
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -56,6 +61,18 @@ namespace TitanBlog
             //Register GmailSmtpService concrete class to be used when IEmailSender is used
             services.AddTransient<IEmailSender, GmailSmtpService>();
 
+            //Add in Swagger as a registered service
+            services.AddSwaggerGen(s =>
+            {
+                //Task 1: Configure Swagger to use xml comments
+                var xmlDocPath = $"{Directory.GetCurrentDirectory()}/wwwroot/TitanBlog.xml";
+                s.IncludeXmlComments(xmlDocPath, true);
+
+                //Task 2: Configure descriptive information for the Help page
+
+
+            });
+
 
         }
 
@@ -73,6 +90,17 @@ namespace TitanBlog
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //Configure Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(s =>
+            {
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "Titan Blog API");
+                s.DocumentTitle = "Titan Blog API";
+
+                //TODO: Don't forget to configure the custom JS and CSS paths
+            });
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

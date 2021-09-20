@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TitanBlog</name>
+    </assembly>
+    <members>
+        <member name="M:TitanBlog.Controllers.ApiControllers.PostsServiceController.GetTopXPosts(System.Int32)">
+            <summary>
+            Allow a consumer to request the latest X number of Blog Posts
+            </summary>
+            <remarks>
+            This is what it looks like when you use the remarks tag
+            </remarks>
+            <param name="num">The number of Posts you want</param>
+            <returns></returns>
+        </member>
+        <member name="T:TitanBlog.Models.Post">
+            <summary>
+            The Blog Post Model respresents an individual Post for a given Blog
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.Id">
+            <summary>
+            The Primary Key
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.BlogId">
+            <summary>
+            The Foreign Key (Blog)
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.Title">
+            <summary>
+            The Post Title
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.Abstract">
+            <summary>
+            Intended to hook the reader without forcing them to read the entire Post
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.Content">
+            <summary>
+            The main body content of the Post
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.Created">
+            <summary>
+            Creation date of the Post
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.Updated">
+            <summary>
+            If the Post was updated then this will show a date
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.Publish">
+            <summary>
+            Is the Post ready to be published to the Blog?
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.Slug">
+            <summary>
+            A shortened URL to the Post (known as a Slug)
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.ImageType">
+            <summary>
+            The Type of Image File (.gif, .jpg, etc...)
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.ImageData">
+            <summary>
+            The Data from the Image File
+            </summary>
+        </member>
+        <member name="P:TitanBlog.Models.Post.Image">
+            <summary>
+            The Image File itself...
+            </summary>
+        </member>
+        <member name="M:TitanBlog.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            
+            </summary>
+            <param name="services"></param>
+        </member>
+    </members>
+</doc>
