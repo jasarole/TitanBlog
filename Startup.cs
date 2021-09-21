@@ -18,6 +18,7 @@ using TitanBlog.Services;
 using TitanBlog.Services.Interfaces;
 using TitanBlog.Classes;
 using System.IO;
+using Microsoft.OpenApi.Models;
 
 namespace TitanBlog
 {
@@ -31,15 +32,19 @@ namespace TitanBlog
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
                     Connection.GetConnectionString(Configuration)));
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("DefaultPolicy",
+                    builder => builder.AllowAnyOrigin()
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader());
+            });
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -64,12 +69,23 @@ namespace TitanBlog
             //Add in Swagger as a registered service
             services.AddSwaggerGen(s =>
             {
-                //Task 1: Configure Swagger to use xml comments
+                //Configure Swagger to use xml comments
                 var xmlDocPath = $"{Directory.GetCurrentDirectory()}/wwwroot/TitanBlog.xml";
                 s.IncludeXmlComments(xmlDocPath, true);
 
-                //Task 2: Configure descriptive information for the Help page
-
+                //Configure descriptive information for the Help page
+                s.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Blog API",
+                    Version = "v1.0",
+                    Description = "Serving up Blog Post data...",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Jason Lynn",
+                        Email = "contact@jasondevs.com",
+                        Url = new Uri("https://www.linkedin.com/in/JasonLynn")
+                    }
+                });
 
             });
 
@@ -91,14 +107,18 @@ namespace TitanBlog
                 app.UseHsts();
             }
 
+            //Use the referenced CORS Policy
+            app.UseCors("DefaultPolicy");
+
             //Configure Swagger
             app.UseSwagger();
             app.UseSwaggerUI(s =>
             {
+
+                s.InjectStylesheet("/swagger/swaggerCustom.css");
+                s.InjectJavascript("/swagger/swaggerCustom.js");
                 s.SwaggerEndpoint("/swagger/v1/swagger.json", "Titan Blog API");
                 s.DocumentTitle = "Titan Blog API";
-
-                //TODO: Don't forget to configure the custom JS and CSS paths
             });
 
             app.UseHttpsRedirection();

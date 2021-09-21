@@ -79,11 +79,5 @@
             The Image File itself...
             </summary>
         </member>
-        <member name="M:TitanBlog.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
-            <summary>
-            
-            </summary>
-            <param name="services"></param>
-        </member>
     </members>
 </doc>

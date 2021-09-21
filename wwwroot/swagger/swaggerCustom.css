@@ -1,0 +1,12 @@
+﻿:root {
+    --cfOrange: #ff993b;
+    --cfBlack: #212121;
+}
+
+#swagger-ui > section > div.topbar {
+    background-color: var(--cfBlack);
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label select {
+    border-color: var(--cfOrange);
+}
